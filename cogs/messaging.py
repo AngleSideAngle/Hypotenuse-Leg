@@ -10,11 +10,11 @@ async def list_embed(ctx, list, title, left_name = "Names", right_name = "IDs"):
     i = 0
     # guild.fetch_members()
     for member in list:
-        if len(names[i] + member.mention + ids[i] + str(member.id)) > 1023:
+        if len(names[i] + member.name + ids[i] + str(member.id)) > 1023:
             names.append("")
             ids.append("")
             i += 1
-        names[i] += f"{member.mention}\n"
+        names[i] += f"{member.name}\n"
         ids[i] += f"{member.id}\n"
     
 

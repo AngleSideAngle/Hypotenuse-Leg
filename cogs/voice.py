@@ -12,13 +12,13 @@ class voice(commands.Cog):
     async def connect(self, ctx, channel : discord.VoiceChannel):
         voice = get(self.client.voice_clients, guild=channel.guild)
         await channel.connect()
-        await ctx.send(f"connected to {channel.mention}")
+        await ctx.send(f"connected to `{channel.name}`")
 
     @commands.command()
     @perm_check()
     async def disconnect(self, ctx, guild : discord.Guild):
         await guild.voice_client.disconnect()
-        await ctx.send(f"disconnected in {guild.name}")
+        await ctx.send(f"disconnected in '{guild.name}'")
 
 def setup(client):
     client.add_cog(voice(client))

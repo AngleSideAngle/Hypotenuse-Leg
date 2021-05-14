@@ -29,10 +29,6 @@ async def on_command_error(ctx, error):
     title = None
     msg = None
     
-    if isinstance(error, commands.CommandError):
-        title = "Command Error"
-        msg = "you do not have permission to run this command"
-    
     if isinstance(error, commands.CommandNotFound):
         title = "Command Not Found"
         msg = f"the command \"{ctx.message.content}\" does not exist"
@@ -95,6 +91,7 @@ async def reload(ctx):
     for file in os.listdir("./cogs"):
         if file.endswith(".py"):
             client.reload_extension(f"cogs.{file[:-3]}")
+    await ctx.send("reloaded cogs")
 
 @client.event
 async def on_message(message):
