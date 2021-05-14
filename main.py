@@ -28,11 +28,11 @@ async def on_ready():
 async def on_command_error(ctx, error):
     title = None
     msg = None
-
+    
     if isinstance(error, commands.CommandError):
         title = "Command Error"
         msg = "you do not have permission to run this command"
-
+    
     if isinstance(error, commands.CommandNotFound):
         title = "Command Not Found"
         msg = f"the command \"{ctx.message.content}\" does not exist"
@@ -45,10 +45,16 @@ async def on_command_error(ctx, error):
         title = "Missing Required Arguments"
         msg = f"you did not input the command's arguments correctly, refer to {client.command_prefix}help for information on how to use the command"
 
+    if isinstance(error, commands.CheckFailure):
+        title = "Check Failure"
+        msg = "you do not have the required permissions to run this command"
+
     if msg and title:
         embed = discord.Embed(title = title, color = color, description = msg)
         embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
         await ctx.send(embed = embed)
+    else:
+        print(error)
 
 @client.command()
 async def invite(ctx):
