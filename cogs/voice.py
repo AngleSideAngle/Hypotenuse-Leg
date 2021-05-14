@@ -10,6 +10,7 @@ class voice(commands.Cog):
     @commands.command()
     @perm_check()
     async def connect(self, ctx, channel : discord.VoiceChannel):
+        await ctx.send(channel)
         voice = get(self.client.voice_clients, guild=channel.guild)
         await channel.connect()
         await ctx.send(f"connected to `{channel.name}`")

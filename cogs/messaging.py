@@ -85,7 +85,7 @@ class messaging(commands.Cog):
     @commands.command()
     async def active(self, ctx):
         if not self.connections:
-            await ctx.send("there are no self.connections currently")
+            await ctx.send("there are no connections currently")
             return
 
         sending = ""
