@@ -1,6 +1,7 @@
 import discord
 from discord import guild
 from discord.channel import DMChannel, TextChannel
+from discord.errors import HTTPException
 from discord.ext import commands
 from secrets import token, link
 from discord.utils import get
@@ -24,11 +25,17 @@ async def on_ready():
     print(f"logged in as: {client.user}\ndisplaying the status: {game}")
     #client.add_cog(messaging(client))
 
+@client.command()
+async def test(ctx, user):
+    test = commands.MemberConverter()
+    member = await test.convert(ctx = ctx, argument = user)
+    await ctx.send(member.mention)
+
 @client.event
 async def on_command_error(ctx, error):
     title = None
     msg = None
-    
+    print(1)
     if isinstance(error, commands.CommandNotFound):
         title = "Command Not Found"
         msg = f"the command \"{ctx.message.content}\" does not exist"
@@ -44,13 +51,13 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
         title = "Check Failure"
         msg = "you do not have the required permissions to run this command"
-
+    
     if msg and title:
         embed = discord.Embed(title = title, color = color, description = msg)
         embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
         await ctx.send(embed = embed)
     else:
-        print(error)
+        await ctx.send(error)
 
 @client.command()
 async def invite(ctx):

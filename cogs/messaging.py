@@ -69,14 +69,34 @@ class messaging(commands.Cog):
             
         
     @commands.command()
-    async def open(self, ctx, channel : typing.Optional[discord.TextChannel] = None):
-        if not channel:
+    async def open(self, ctx, channel_id):
+        if not channel_id:
             self.connections[ctx.channel] = None
             await ctx.send(f"channel reset")
             return
 
+        channel = await self.client.fetch_channel(channel_id)
+        
+        if not channel.type == discord.ChannelType.text:
+            raise commands.CommandInvokeError()
         self.connections[ctx.channel] = channel
-        await ctx.send(f"channel is {self.connections[ctx.channel].mention}")
+        await ctx.send(f"channel is `{self.connections[ctx.channel]}`")
+
+    @open.error
+    async def open_error(self, ctx, error):
+        msg = ""
+        title = ""
+
+        if isinstance(error, commands.CommandInvokeError):
+            title = "Command Invoke Error"
+            msg = "Enter a text channel id that the bot has access to"
+ 
+        if msg and title:
+            embed = discord.Embed(title = title, color = color, description = msg)
+            embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
+            await ctx.send(embed = embed)
+        else:
+            print(error)
 
     @commands.command()
     async def members(self, ctx, guild : discord.Guild):
@@ -93,16 +113,16 @@ class messaging(commands.Cog):
         for connection in self.connections:
             if self.connections[connection]:    
                 if connection.type == discord.ChannelType.text:
-                    sending += f"**{connection.guild.name}** {connection.mention}\n"
+                    sending += f"**{connection.guild.name}** {connection.name}\n"
                 elif connection.type == discord.ChannelType.private:
                     sending += f"**DM** {connection.recipient.name}\n"
 
                 if self.connections[connection].type == discord.ChannelType.text:
-                    receiving += f"**{self.connections[connection].guild.name}** {self.connections[connection].mention}\n"
+                    receiving += f"**{self.connections[connection].guild.name}** {self.connections[connection].name}\n"
                 elif self.connections[connection].type == discord.ChannelType.private:
                     receiving += f"**DM** {self.connections[connection].recipient.name}\n"
 
-        response = discord.Embed(title = "Open self.connections", color = color)
+        response = discord.Embed(title = "Open Connections", color = color)
         response.add_field(name = "sending", value = sending)
         response.add_field(name = "receiving", value = receiving)
         await ctx.send(embed = response)
