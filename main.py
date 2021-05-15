@@ -79,19 +79,6 @@ async def change_nick(ctx, server_id, *, bot_nick):
     me = get(ctx.guild.members, id = client.user.id)
     await me.edit(nick = bot_nick)
 
-
-'''
-@client.command()
-async def make_hook(ctx, name, *, message):
-    if not connections[ctx.channel]:
-        await ctx.send("there is no channel linked to this one")
-        return
-    channel = connections[ctx.channel]
-    msg = await channel.create_webhook(name = name)
-    await msg.send(message)
-    await msg.delete()
-'''
-
 @client.command()
 @perm_check()
 async def reload(ctx):
