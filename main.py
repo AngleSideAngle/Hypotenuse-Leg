@@ -23,7 +23,10 @@ async def on_ready():
     game = discord.Game(playing)
     await client.change_presence(activity = game)
     print(f"logged in as: {client.user}\ndisplaying the status: {game}")
-    #client.add_cog(messaging(client))
+
+@client.event
+async def on_guild_join(guild):
+    print(f"Joined {guild.name}")
 
 @client.command()
 async def test(ctx, user):
