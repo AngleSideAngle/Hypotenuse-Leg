@@ -35,7 +35,7 @@ async def test(ctx, user):
 async def on_command_error(ctx, error):
     title = None
     msg = None
-    print(1)
+
     if isinstance(error, commands.CommandNotFound):
         title = "Command Not Found"
         msg = f"the command \"{ctx.message.content}\" does not exist"
@@ -57,7 +57,7 @@ async def on_command_error(ctx, error):
         embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
         await ctx.send(embed = embed)
     else:
-        await ctx.send(error)
+        print(error)
 
 @client.command()
 async def invite(ctx):
@@ -74,10 +74,11 @@ async def status(ctx, *, status = None):
 
 @client.command()
 @perm_check()
-async def change_nick(ctx, server_id, *, bot_nick):
-    guild = await client.fetch_guild(server_id)
-    me = get(ctx.guild.members, id = client.user.id)
-    await me.edit(nick = bot_nick)
+async def nick(ctx, guild : discord.Guild, *, bot_nick):
+    
+    #me = get(guild.members, id = client.user.id)
+    
+    await guild.me.edit(nick = bot_nick)
 
 @client.command()
 @perm_check()
