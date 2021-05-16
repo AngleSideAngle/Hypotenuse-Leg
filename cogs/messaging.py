@@ -69,7 +69,7 @@ class messaging(commands.Cog):
             
         
     @commands.command()
-    async def open(self, ctx, channel_id):
+    async def open(self, ctx, channel_id = None):
         if not channel_id:
             self.connections[ctx.channel] = None
             await ctx.send(f"channel reset")
