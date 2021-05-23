@@ -3,22 +3,29 @@ import discord
 #from discord.channel import DMChannel, TextChannel
 from discord.errors import HTTPException
 from discord.ext import commands
+from discord.mentions import AllowedMentions
 from discord.utils import get
 
 import os
 
 from secrets import token, link
-from permissions import perm_check, trusted
-from settings import color, playing, command_prefix, comment_prefix
+from settings import color, playing, command_prefix, comment_prefix, error_responses
+
+from utilities.ErrorCheck import ErrorCheck
+from utilities.permissions import perm_check, trusted
 
 intents = discord.Intents.default()
 intents.members = True
-client = commands.Bot(command_prefix = command_prefix, intents = intents)
+
+mentions = discord.AllowedMentions(everyone = False, roles = False)
+client = commands.Bot(command_prefix = command_prefix, intents = intents, allowed_mentions = mentions)
 
 #activates all cogs on startup
 for file in os.listdir("./src/cogs"):
     if file.endswith(".py"):
         client.load_extension(f"cogs.{file[:-3]}")
+
+command_errors = ErrorCheck(error_responses)
 
 @client.event
 async def on_ready():
@@ -38,35 +45,13 @@ async def test(ctx, user):
 
 @client.event
 async def on_command_error(ctx, error):
-    title = None
-    msg = None
-
-    if isinstance(error, commands.CommandNotFound):
-        title = "Command Not Found"
-        msg = f"the command \"{ctx.message.content}\" does not exist"
-
-    if isinstance(error, commands.BotMissingPermissions):
-        title = "Missing Permissions"
-        msg = f"{client.user.name} lacks the required permissions"
-
-    if isinstance(error, commands.MissingRequiredArgument):
-        title = "Missing Required Arguments"
-        msg = f"you did not input the command's arguments correctly, refer to {client.command_prefix}help for information on how to use the command"
-
-    if isinstance(error, commands.CheckFailure):
-        title = "Check Failure"
-        msg = "you do not have the required permissions to run this command"
-    
-    if msg and title:
-        embed = discord.Embed(title = title, color = color, description = msg)
-        embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-        await ctx.send(embed = embed)
-    else:
-        print(error)
+    await command_errors.check(ctx, error)
 
 @client.command()
 async def invite(ctx):
-    await ctx.send(link)
+    embed = discord.Embed(title = f"{client.user.name}'s Invite", color = color, url = link)
+    embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
+    await ctx.send(embed = embed)
 
 @client.command()
 @perm_check()
@@ -119,6 +104,6 @@ async def on_message(message):
     if message.channel in connections.values():
         for pair in connections:
             if connections[pair] == message.channel:
-                await pair.send(f"`{message.author.name}` {message.content}")
+                await pair.send(f"`{message.author.name}` {message.content}", allowed_mentions = discord.AllowedMentions.none())
 
 client.run(token)

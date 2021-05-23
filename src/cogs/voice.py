@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from permissions import perm_check
+from utilities.permissions import perm_check
 from discord.utils import get
 from settings import color
 
