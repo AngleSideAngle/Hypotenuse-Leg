@@ -1,11 +1,13 @@
 import discord
-from discord import guild
-from discord.channel import DMChannel, TextChannel
+#from discord import guild
+#from discord.channel import DMChannel, TextChannel
 from discord.errors import HTTPException
 from discord.ext import commands
-from secrets import token, link
 from discord.utils import get
+
 import os
+
+from secrets import token, link
 from permissions import perm_check, trusted
 from settings import color, playing, command_prefix, comment_prefix
 
@@ -14,7 +16,7 @@ intents.members = True
 client = commands.Bot(command_prefix = command_prefix, intents = intents)
 
 #activates all cogs on startup
-for file in os.listdir("./cogs"):
+for file in os.listdir("./src/cogs"):
     if file.endswith(".py"):
         client.load_extension(f"cogs.{file[:-3]}")
 

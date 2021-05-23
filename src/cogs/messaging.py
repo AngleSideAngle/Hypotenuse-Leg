@@ -81,13 +81,13 @@ class messaging(commands.Cog):
             raise commands.CommandInvokeError()
         self.connections[ctx.channel] = channel
         await ctx.send(f"channel is `{self.connections[ctx.channel]}`")
-
+    
     @open.error
     async def open_error(self, ctx, error):
         msg = ""
         title = ""
 
-        if isinstance(error, commands.CommandInvokeError):
+        if isinstance(error, commands.CommandInvokeError) or isinstance(error, discord.NotFound):
             title = "Command Invoke Error"
             msg = "Enter a text channel id that the bot has access to"
  
@@ -97,7 +97,7 @@ class messaging(commands.Cog):
             await ctx.send(embed = embed)
         else:
             print(error)
-
+    
     @commands.command()
     async def members(self, ctx, guild : discord.Guild):
         await list_embed(ctx, list = await guild.fetch_members().flatten(), title = f"{guild.name} members")
