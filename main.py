@@ -104,8 +104,14 @@ async def on_message(message):
     if message.channel in connections.keys():
         if not connections[message.channel]:
             return
-        
-        await connections[message.channel].send(message.content)
+        try:
+            await connections[message.channel].send(message.content)
+        except discord.Forbidden:
+            title = "Missing Permissions"
+            msg = f"{client.user.name} lacks the required permissions"
+            embed = discord.Embed(title = title, color = color, description = msg)
+            embed.set_author(name = message.author, icon_url = message.author.avatar_url)
+            await message.channel.send(embed = embed)
 
     # sends incoming messages
     if message.channel in connections.values():
