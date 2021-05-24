@@ -81,22 +81,6 @@ async def on_message(message):
         return
 
     connections = client.cogs["messaging"].connections
-    # sends outgoing messages
-    if message.channel in connections.keys():
-        if not connections[message.channel] or message.content.startswith(client.command_prefix) or message.content.startswith(comment_prefix):
-            return
-        
-        if message.content:
-            await connections[message.channel].send(content = message.content)
-
-        if message.attachments:
-            for attachment in message.attachments:
-                file = await attachment.to_file()
-                await connections[message.channel].send(file = file)
-
-        for embed in message.embeds:
-            await connections[message.channel].send(embed = embed)
-        
 
     # sends incoming messages
     if message.channel in connections.values():
@@ -111,6 +95,26 @@ async def on_message(message):
 
             for embed in message.embeds:
                 await pair.send(embed = embed)
+
+    # EVERYTHING PAST HERE IGNORES PREFIXES
+    if message.content.startswith(client.command_prefix) or message.content.startswith(comment_prefix):
+            return
+
+    # sends outgoing messages
+    if message.channel in connections.keys():
+        if message.content:
+            await connections[message.channel].send(content = message.content)
+
+        if message.attachments:
+            for attachment in message.attachments:
+                file = await attachment.to_file()
+                await connections[message.channel].send(file = file)
+
+        for embed in message.embeds:
+            await connections[message.channel].send(embed = embed)
+        
+    if message.channel.type == discord.ChannelType.private and message.channel not in (connections.keys() or connections.values()):
+        print(f"{message.author.name}: {message.clean_content}")
 
 @client.event
 async def on_error(event, *args, **kwargs):
