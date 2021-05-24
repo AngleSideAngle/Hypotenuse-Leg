@@ -84,13 +84,31 @@ async def on_message(message):
         if not connections[message.channel] or message.content.startswith(client.command_prefix) or message.content.startswith(comment_prefix):
             return
         
-        await connections[message.channel].send(message.content)
+        if message.content:
+            await connections[message.channel].send(content = message.content)
+
+        if message.attachments:
+            for attachment in message.attachments:
+                file = await attachment.to_file()
+                await connections[message.channel].send(file = file)
+
+        for embed in message.embeds:
+            await connections[message.channel].send(embed = embed)
+        
 
     # sends incoming messages
     if message.channel in connections.values():
         for pair in connections:
             if connections[pair] == message.channel:
                 await pair.send(f"`{message.author.name}` {message.content}", allowed_mentions = discord.AllowedMentions.none())
+
+            if message.attachments:
+                for attachment in message.attachments:
+                    file = await attachment.to_file()
+                    await pair.send(file = file)
+
+            for embed in message.embeds:
+                await pair.send(embed = embed)
 
 @client.event
 async def on_error(event, *args, **kwargs):
