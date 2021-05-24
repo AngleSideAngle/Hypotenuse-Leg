@@ -22,12 +22,12 @@ async def list_embed(ctx, list, title, left_name = "Names", right_name = "IDs"):
     response.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
     response.add_field(name = left_name, value = names[0])
     response.add_field(name = right_name, value = ids[0])
-    await ctx.send(embed = response)
+    await ctx.reply(embed = response)
     for i in range(len(ids))[1:]:
         response = discord.Embed(color = color)
         response.add_field(name = left_name, value = names[i])
         response.add_field(name = right_name, value = ids[i])
-        await ctx.send(embed = response)
+        await ctx.reply(embed = response)
 
 class messaging(commands.Cog):
     def __init__(self, client):
@@ -65,14 +65,14 @@ class messaging(commands.Cog):
             response.add_field(name = "IDs", value = ids)
 
             response.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-            await ctx.send(embed = response)
+            await ctx.reply(embed = response)
             
         
     @commands.command()
     async def open(self, ctx, channel_id = None):
         if not channel_id:
             self.connections[ctx.channel] = None
-            await ctx.send(f"channel reset")
+            await ctx.reply(f"channel reset")
             return
 
         channel = await self.client.fetch_channel(channel_id)
@@ -80,7 +80,7 @@ class messaging(commands.Cog):
         if not channel.type == discord.ChannelType.text:
             raise commands.CommandInvokeError()
         self.connections[ctx.channel] = channel
-        await ctx.send(f"channel is `{self.connections[ctx.channel]}`")
+        await ctx.reply(f"channel is `{self.connections[ctx.channel]}`")
     
     @open.error
     async def open_error(self, ctx, error):
@@ -94,7 +94,7 @@ class messaging(commands.Cog):
         if msg and title:
             embed = discord.Embed(title = title, color = color, description = msg)
             embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-            await ctx.send(embed = embed)
+            await ctx.reply(embed = embed)
         else:
             print(error)
     
@@ -105,7 +105,7 @@ class messaging(commands.Cog):
     @commands.command()
     async def active(self, ctx):
         if not self.connections:
-            await ctx.send("there are no connections currently")
+            await ctx.reply("there are no connections currently")
             return
 
         sending = ""
@@ -125,7 +125,7 @@ class messaging(commands.Cog):
         response = discord.Embed(title = "Open Connections", color = color)
         response.add_field(name = "sending", value = sending)
         response.add_field(name = "receiving", value = receiving)
-        await ctx.send(embed = response)
+        await ctx.reply(embed = response)
 
 def setup(client):
     client.add_cog(messaging(client))

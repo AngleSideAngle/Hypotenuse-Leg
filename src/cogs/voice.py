@@ -14,7 +14,7 @@ class voice(commands.Cog):
         channel = await self.client.fetch_channel(channel_id)
         voice = get(self.client.voice_clients, guild=channel.guild)
         await channel.connect()
-        await ctx.send(f"connected to `{channel.name}`")
+        await ctx.reply(f"connected to `{channel.name}`")
     
     @connect.error
     async def connect_error(self, ctx, error):
@@ -28,7 +28,7 @@ class voice(commands.Cog):
         if msg and title:
             embed = discord.Embed(title = title, color = color, description = msg)
             embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-            await ctx.send(embed = embed)
+            await ctx.reply(embed = embed)
         else:
             print(error)
     
@@ -36,7 +36,7 @@ class voice(commands.Cog):
     @perm_check()
     async def disconnect(self, ctx, guild : discord.Guild):
         await guild.voice_client.disconnect()
-        await ctx.send(f"disconnected in `{guild.name}`")
+        await ctx.reply(f"disconnected in `{guild.name}`")
 
 
 def setup(client):

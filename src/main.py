@@ -65,7 +65,7 @@ async def nick(ctx, guild : discord.Guild, *, bot_nick):
 @client.command()
 @perm_check()
 async def reload(ctx):
-    for file in os.listdir("./cogs"):
+    for file in os.listdir("./src/cogs"):
         if file.endswith(".py"):
             client.reload_extension(f"cogs.{file[:-3]}")
     await ctx.reply("reloaded cogs")
