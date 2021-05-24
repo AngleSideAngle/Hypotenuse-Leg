@@ -38,35 +38,34 @@ class messaging(commands.Cog):
     async def cog_check(self, ctx):
         return ctx.author.id in trusted
 
-    @commands.command()
-    async def list(self, ctx, guild : typing.Optional[discord.Guild] = None):
-        
-        if guild: #lists all channels for server
-            text_channels = []
-            voice_channels = []
-            for channel in await guild.fetch_channels():
-                if channel.type == discord.ChannelType.text:
-                    text_channels.append(channel)
-                if channel.type == discord.ChannelType.voice:
-                    voice_channels.append(channel)
-            
-            if text_channels:
-                await list_embed(ctx, text_channels, title = guild.name, left_name = "Text")
-            if voice_channels:
-                await list_embed(ctx, voice_channels, title = guild.name, left_name = "Voice")
-        else:
-            servers = ""
-            ids = ""
-            async for guild in self.client.fetch_guilds():
-                servers += f"{guild.name}\n"
-                ids += f"{guild.id}\n"
-            response = discord.Embed(title = f"{self.client.user.name}'s servers", color = color)
-            response.add_field(name = "Names", value = servers)
-            response.add_field(name = "IDs", value = ids)
+    @commands.group(invoke_without_command = True)
+    async def info(self, ctx):
+        servers = ""
+        ids = ""
+        async for guild in self.client.fetch_guilds():
+            servers += f"{guild.name}\n"
+            ids += f"{guild.id}\n"
+        response = discord.Embed(title = f"{self.client.user.name}'s servers", color = color, description = f"`{self.client.command_prefix}info guild <guild id>` for the channels of a guild\n`{self.client.command_prefix}info member <member id>` for information about a member.")
+        response.add_field(name = "Names", value = servers)
+        response.add_field(name = "IDs", value = ids)
 
-            response.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-            await ctx.reply(embed = response)
-            
+        response.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
+        await ctx.reply(embed = response)
+
+    @info.command()
+    async def guild(self, ctx, guild : discord.Guild):
+        text_channels = []
+        voice_channels = []
+        for channel in await guild.fetch_channels():
+            if channel.type == discord.ChannelType.text:
+                text_channels.append(channel)
+            if channel.type == discord.ChannelType.voice:
+                voice_channels.append(channel)
+        
+        if text_channels:
+            await list_embed(ctx, text_channels, title = guild.name, left_name = "Text")
+        if voice_channels:
+            await list_embed(ctx, voice_channels, title = guild.name, left_name = "Voice")
         
     @commands.command()
     async def open(self, ctx, channel_id = None):

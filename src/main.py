@@ -27,6 +27,8 @@ for file in os.listdir("./src/cogs"):
 
 command_errors = ErrorCheck(error_responses, message_error= message_error)
 
+client.help_command = commands.MinimalHelpCommand()
+
 @client.event
 async def on_ready():
     game = discord.Game(playing)
