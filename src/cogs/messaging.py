@@ -27,7 +27,7 @@ async def list_embed(ctx, list, title, left_name = "Names", right_name = "IDs"):
         response = discord.Embed(color = color)
         response.add_field(name = left_name, value = names[i])
         response.add_field(name = right_name, value = ids[i])
-        await ctx.reply(embed = response)
+        await ctx.send(embed = response)
 
 class messaging(commands.Cog):
     def __init__(self, client):
