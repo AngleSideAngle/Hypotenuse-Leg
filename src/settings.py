@@ -24,3 +24,8 @@ error_responses = {
         "You do not have the required permissions to run this command"
     )
 }
+
+message_error = (
+    "Missing Permissions",
+    "The bot lacks required permissions"
+)
