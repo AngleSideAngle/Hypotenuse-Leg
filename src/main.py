@@ -93,9 +93,6 @@ async def on_message(message):
                     file = await attachment.to_file()
                     await pair.send(file = file)
 
-            for embed in message.embeds:
-                await pair.send(embed = embed)
-
     # EVERYTHING PAST HERE IGNORES PREFIXES
     if message.content.startswith(client.command_prefix) or message.content.startswith(comment_prefix):
             return
@@ -109,9 +106,6 @@ async def on_message(message):
             for attachment in message.attachments:
                 file = await attachment.to_file()
                 await connections[message.channel].send(file = file)
-
-        for embed in message.embeds:
-            await connections[message.channel].send(embed = embed)
         
     if message.channel.type == discord.ChannelType.private and message.channel not in (connections.keys() or connections.values()):
         print(f"{message.author.name}: {message.clean_content}")
