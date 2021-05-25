@@ -99,19 +99,18 @@ async def on_message(message):
 
     # sends outgoing messages
     if message.channel in connections.keys():
-        if message.content:
-            await connections[message.channel].send(content = message.content)
+        try:
+            if message.content:
+                await connections[message.channel].send(content = message.content)
 
-        if message.attachments:
-            for attachment in message.attachments:
-                file = await attachment.to_file()
-                await connections[message.channel].send(file = file)
+            if message.attachments:
+                for attachment in message.attachments:
+                    file = await attachment.to_file()
+                    await connections[message.channel].send(file = file)
+        except discord.errors.Forbidden:
+            await command_errors.message_error_reply(message)
         
     if message.channel.type == discord.ChannelType.private and message.channel not in (connections.keys() or connections.values()):
         print(f"{message.author.name}: {message.clean_content}")
-
-@client.event
-async def on_error(event, *args, **kwargs):
-    await command_errors.message_error_reply(args[0])
-
+        
 client.run(token)

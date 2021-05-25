@@ -1,5 +1,4 @@
 import discord
-from discord import embeds
 
 class ErrorCheck:
     def __init__(self, responses : dict, message_error : tuple):
@@ -14,11 +13,11 @@ class ErrorCheck:
                 title = self.responses[i][0]
                 msg = self.responses[i][1]
         if msg and title:
-            embed = discord.Embed(title = title, color = author.color, description = msg)
+            embed = discord.Embed(title = title, description = msg, color = discord.Colour.dark_theme())
             await messagable.reply(embed = embed)
         else:
             print(error)
 
     async def message_error_reply(self, message):
-        embed = discord.Embed(title = self.message_error[0], color = message.author.color, description = self.message_error[1])
+        embed = discord.Embed(title = self.message_error[0], description = self.message_error[1], color = discord.Colour.dark_theme())
         await message.reply(embed = embed)
