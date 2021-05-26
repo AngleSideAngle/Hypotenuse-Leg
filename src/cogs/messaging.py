@@ -111,8 +111,8 @@ class messaging(commands.Cog):
             await ctx.reply("there are no connections currently")
             return
 
-        sending = "```"
-        receiving = "```"
+        sending = ""
+        receiving = ""
         for connection in self.connections:
             if connection.type == discord.ChannelType.text:
                 sending += f"**{connection.guild.name}** {connection.name}\n"
@@ -123,12 +123,20 @@ class messaging(commands.Cog):
                 receiving += f"**{self.connections[connection].guild.name}** {self.connections[connection].name}\n"
             elif self.connections[connection].type == discord.ChannelType.private:
                 receiving += f"**DM** {self.connections[connection].recipient.name}\n"
-        sending += "```"
-        receiving += "```"
         response = discord.Embed(title = "Open Connections", color = color)
         response.add_field(name = "sending", value = sending)
         response.add_field(name = "receiving", value = receiving)
         await ctx.reply(embed = response)
+
+    @commands.command()
+    async def reply(self, ctx, message_id, *, reply):
+        try:
+            channel = self.connections[ctx.channel]
+        except:
+            print("e")
+            return
+        message = await channel.fetch_message(message_id)
+        await message.reply(reply)
 
 def setup(client):
     client.add_cog(messaging(client))

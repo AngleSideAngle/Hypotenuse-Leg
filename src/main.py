@@ -7,6 +7,7 @@ from discord.mentions import AllowedMentions
 from discord.utils import get
 
 import os
+import datetime
 
 from secrets import token, link
 from settings import color, playing, command_prefix, comment_prefix, error_responses, message_error
@@ -86,7 +87,10 @@ async def on_message(message):
     if message.channel in connections.values():
         for pair in connections:
             if connections[pair] == message.channel:
-                await pair.send(f"`{message.author.name}` {message.content}", allowed_mentions = discord.AllowedMentions.none())
+                msg = discord.Embed(description = message.content, color = message.author.color)
+                msg.set_footer(text = f"{message.author} | {message.author.id}\n{message.channel} | {message.id}", icon_url = message.author.avatar_url)
+                #await pair.send(f"`{message.author.name}` {message.content}", allowed_mentions = discord.AllowedMentions.none())
+                await pair.send(embed = msg)
 
             if message.attachments:
                 for attachment in message.attachments:
