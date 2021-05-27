@@ -18,7 +18,7 @@ from utilities.permissions import perm_check, trusted
 intents = discord.Intents.default()
 intents.members = True
 
-mentions = discord.AllowedMentions(everyone = False, roles = False, replied_user= False)
+mentions = discord.AllowedMentions(everyone = False, roles = False)
 client = commands.Bot(command_prefix = command_prefix, intents = intents, allowed_mentions = mentions)
 
 #activates all cogs on startup
@@ -48,7 +48,7 @@ async def on_command_error(ctx, error):
 async def invite(ctx):
     embed = discord.Embed(title = f"{client.user.name}'s Invite", color = color, url = link)
     embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-    await ctx.reply(embed = embed)
+    await ctx.send(embed = embed)
 
 @client.command()
 @perm_check()
@@ -71,7 +71,7 @@ async def reload(ctx):
     for file in os.listdir("./src/cogs"):
         if file.endswith(".py"):
             client.reload_extension(f"cogs.{file[:-3]}")
-    await ctx.reply("reloaded cogs")
+    await ctx.send("reloaded cogs")
 
 @client.event
 async def on_message(message):
@@ -89,13 +89,12 @@ async def on_message(message):
             if connections[pair] == message.channel:
                 msg = discord.Embed(description = message.content, color = message.author.color)
                 msg.set_footer(text = f"{message.author} | {message.author.id}\n{message.channel} | {message.id}", icon_url = message.author.avatar_url)
-                #await pair.send(f"`{message.author.name}` {message.content}", allowed_mentions = discord.AllowedMentions.none())
                 await pair.send(embed = msg)
 
-            if message.attachments:
-                for attachment in message.attachments:
-                    file = await attachment.to_file()
-                    await pair.send(file = file)
+                if message.attachments:
+                    for attachment in message.attachments:
+                        file = await attachment.to_file()
+                        await pair.send(file = file)
 
     # EVERYTHING PAST HERE IGNORES PREFIXES
     if message.content.startswith(client.command_prefix) or message.content.startswith(comment_prefix):

@@ -4,31 +4,6 @@ from discord.ext import commands
 from settings import color
 from secrets import trusted
 
-async def list_embed(ctx, list, title, left_name = "Names", right_name = "IDs"):
-    names = [""]
-    ids = [""]
-    i = 0
-    # guild.fetch_members()
-    for member in list:
-        if len(names[i] + member.name + ids[i] + str(member.id)) > 1023:
-            names.append("")
-            ids.append("")
-            i += 1
-        names[i] += f"{member.name}\n"
-        ids[i] += f"{member.id}\n"
-    
-
-    response = discord.Embed(title =  title, color = color)
-    response.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-    response.add_field(name = left_name, value = names[0])
-    response.add_field(name = right_name, value = ids[0])
-    await ctx.reply(embed = response)
-    for i in range(len(ids))[1:]:
-        response = discord.Embed(color = color)
-        response.add_field(name = left_name, value = names[i])
-        response.add_field(name = right_name, value = ids[i])
-        await ctx.send(embed = response)
-
 class messaging(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -40,42 +15,50 @@ class messaging(commands.Cog):
 
     @commands.group(invoke_without_command = True)
     async def info(self, ctx):
-        servers = ""
-        ids = ""
+        response = commands.Paginator(max_size = 2048)
         async for guild in self.client.fetch_guilds():
-            servers += f"{guild.name}\n"
-            ids += f"{guild.id}\n"
-        response = discord.Embed(title = f"{self.client.user.name}'s servers", color = color, description = f"`{self.client.command_prefix}info guild <guild id>` for the channels of a guild\n`{self.client.command_prefix}info member <member id>` for information about a member.")
-        response.add_field(name = "Names", value = servers)
-        response.add_field(name = "IDs", value = ids)
+            response.add_line(f"{guild.name} • {guild.id}")
+        for page in response.pages:
+            embed = discord.Embed(title = f"{self.client.user.name}'s servers", color = ctx.me.color, description = f"`{self.client.command_prefix}info guild <guild id>` for the channels of a guild\n`{self.client.command_prefix}info members <guild id>` for the list of members in a guild\n`{self.client.command_prefix}info member <member id>` for information about a member.{page}")
 
-        response.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-        await ctx.reply(embed = response)
+        await ctx.send(embed = embed)
 
     @info.command()
     async def guild(self, ctx, guild : discord.Guild):
-        text_channels = []
-        voice_channels = []
+        text = commands.Paginator(max_size = 2048)
+        voice = commands.Paginator(max_size = 2048)
         for channel in await guild.fetch_channels():
             if channel.type == discord.ChannelType.text:
-                text_channels.append(channel)
-            if channel.type == discord.ChannelType.voice:
-                voice_channels.append(channel)
-        
-        if text_channels:
-            await list_embed(ctx, text_channels, title = guild.name, left_name = "Text")
-        if voice_channels:
-            await list_embed(ctx, voice_channels, title = guild.name, left_name = "Voice")
+                text.add_line(f"{channel.name} • {channel.id}")
+            elif channel.type == discord.ChannelType.voice:
+                voice.add_line(f"{channel.name} • {channel.id}")
+    
+        for page in text.pages:
+            embed = discord.Embed(title = "Text", color = ctx.me.color, description = page)
+            await ctx.send(embed = embed)
+
+        for page in voice.pages:
+            embed = discord.Embed(title = "Voice", color = ctx.me.color, description = page)
+            await ctx.send(embed = embed)
+
+    @info.command()
+    async def members(self, ctx, guild : discord.Guild):
+        response = commands.Paginator(max_size = 2048)
+        for member in await guild.fetch_members().flatten():
+            response.add_line(f"{member.name} • {member.id}")
+        for page in response.pages:
+            embed = discord.Embed(title = f"{guild.name} Members", color = ctx.me.color, description = page)
+            await ctx.send(embed = embed)
 
     @info.command()
     async def member(self, ctx, member_id):
-        await ctx.reply("coming soon")
+        await ctx.send("coming soon")
     
     @commands.command()
     async def open(self, ctx, channel_id = None):
         if not channel_id:
             del self.connections[ctx.channel]
-            await ctx.reply(f"channel reset")
+            await ctx.send(f"channel reset")
             return
 
         channel = await self.client.fetch_channel(channel_id)
@@ -83,7 +66,7 @@ class messaging(commands.Cog):
         if not channel.type == discord.ChannelType.text:
             raise commands.CommandInvokeError()
         self.connections[ctx.channel] = channel
-        await ctx.reply(f"channel is `{self.connections[ctx.channel]}`")
+        await ctx.send(f"channel is `{self.connections[ctx.channel]}`")
     
     @open.error
     async def open_error(self, ctx, error):
@@ -97,46 +80,42 @@ class messaging(commands.Cog):
         if msg and title:
             embed = discord.Embed(title = title, color = color, description = msg)
             embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-            await ctx.reply(embed = embed)
+            await ctx.send(embed = embed)
         else:
             print(error)
     
-    @commands.command()
-    async def members(self, ctx, guild : discord.Guild):
-        await list_embed(ctx, list = await guild.fetch_members().flatten(), title = f"{guild.name} members")
 
     @commands.command()
     async def active(self, ctx):
         if not self.connections:
-            await ctx.reply("there are no connections currently")
+            await ctx.send("there are no connections currently")
             return
-
-        sending = ""
-        receiving = ""
+        response = commands.Paginator(max_size = 2048)
         for connection in self.connections:
             if connection.type == discord.ChannelType.text:
-                sending += f"**{connection.guild.name}** {connection.name}\n"
-            elif connection.type == discord.ChannelType.private:
-                sending += f"**DM** {connection.recipient.name}\n"
+                line = f"{connection.guild.name}: {connection.name} • "
+            else:
+                line = f"DM {connection.recipient.name} • "
 
             if self.connections[connection].type == discord.ChannelType.text:
-                receiving += f"**{self.connections[connection].guild.name}** {self.connections[connection].name}\n"
-            elif self.connections[connection].type == discord.ChannelType.private:
-                receiving += f"**DM** {self.connections[connection].recipient.name}\n"
-        response = discord.Embed(title = "Open Connections", color = color)
-        response.add_field(name = "sending", value = sending)
-        response.add_field(name = "receiving", value = receiving)
-        await ctx.reply(embed = response)
+                line += f"{self.connections[connection].guild.name}: {self.connections[connection].name}"
+            else:
+                line += f"DM {self.connections[connection].recipient.name}"
+
+            response.add_line(line)
+        for page in response.pages:
+            embed = discord.Embed(title = "Active Channel Connections", color = ctx.me.color, description = page)
+            await ctx.send(embed = embed)
 
     @commands.command()
-    async def reply(self, ctx, message_id, *, reply):
+    async def reply(self, ctx, message_id, ping : typing.Optional[bool] = True, *, reply):
         try:
             channel = self.connections[ctx.channel]
         except:
             print("e")
             return
         message = await channel.fetch_message(message_id)
-        await message.reply(reply)
+        await message.reply(reply, allowed_mentions = discord.AllowedMentions(replied_user = ping))
 
 def setup(client):
     client.add_cog(messaging(client))

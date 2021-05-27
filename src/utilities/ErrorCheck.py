@@ -14,10 +14,10 @@ class ErrorCheck:
                 msg = self.responses[i][1]
         if msg and title:
             embed = discord.Embed(title = title, description = msg, color = discord.Colour.dark_theme())
-            await messagable.reply(embed = embed)
+            await messagable.send(embed = embed)
         else:
             print(error)
 
     async def message_error_reply(self, message):
         embed = discord.Embed(title = self.message_error[0], description = self.message_error[1], color = discord.Colour.dark_theme())
-        await message.reply(embed = embed)
+        await message.send(embed = embed)
