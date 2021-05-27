@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.errors import BotMissingAnyRole, BotMissingPermissions, CheckFailure
 playing = "The Legend of Zelda: Breath of the Wild"
-color = discord.Colour.blue()
 command_prefix = '+'
 comment_prefix = '#'
 

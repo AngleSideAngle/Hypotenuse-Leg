@@ -20,4 +20,4 @@ class ErrorCheck:
 
     async def message_error_reply(self, message):
         embed = discord.Embed(title = self.message_error[0], description = self.message_error[1], color = discord.Colour.dark_theme())
-        await message.send(embed = embed)
+        await message.channel.send(embed = embed)

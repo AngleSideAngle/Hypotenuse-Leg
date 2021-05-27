@@ -1,7 +1,6 @@
 import discord
 import typing
 from discord.ext import commands
-from settings import color
 from secrets import trusted
 
 class messaging(commands.Cog):
@@ -19,12 +18,12 @@ class messaging(commands.Cog):
         async for guild in self.client.fetch_guilds():
             response.add_line(f"{guild.name} • {guild.id}")
         for page in response.pages:
-            embed = discord.Embed(title = f"{self.client.user.name}'s servers", color = ctx.me.color, description = f"`{self.client.command_prefix}info guild <guild id>` for the channels of a guild\n`{self.client.command_prefix}info members <guild id>` for the list of members in a guild\n`{self.client.command_prefix}info member <member id>` for information about a member.{page}")
+            embed = discord.Embed(title = f"{self.client.user.name}'s servers", color = ctx.me.color, description = f"`{self.client.command_prefix}info channels <guild id>` for the channels of a guild\n`{self.client.command_prefix}info members <guild id>` for the list of members in a guild\n`{self.client.command_prefix}info member <member id>` for information about a member.{page}")
 
         await ctx.send(embed = embed)
 
     @info.command()
-    async def guild(self, ctx, guild : discord.Guild):
+    async def channels(self, ctx, guild : discord.Guild):
         text = commands.Paginator(max_size = 2048)
         voice = commands.Paginator(max_size = 2048)
         for channel in await guild.fetch_channels():
@@ -54,20 +53,28 @@ class messaging(commands.Cog):
     async def member(self, ctx, member_id):
         await ctx.send("coming soon")
     
-    @commands.command()
-    async def open(self, ctx, channel_id = None):
-        if not channel_id:
-            del self.connections[ctx.channel]
-            await ctx.send(f"channel reset")
-            return
+    @commands.group(invoke_without_command = True)
+    async def open(self, ctx):
+        del self.connections[ctx.channel]
+        await ctx.send(f"channel reset")
 
+    @open.command()
+    async def channel(self, ctx, channel_id):
         channel = await self.client.fetch_channel(channel_id)
         
         if not channel.type == discord.ChannelType.text:
             raise commands.CommandInvokeError()
         self.connections[ctx.channel] = channel
         await ctx.send(f"channel is `{self.connections[ctx.channel]}`")
-    
+
+    @open.command()
+    async def dm(self, ctx, user_id):
+        user = await self.client.fetch_user(user_id)
+        channel = await user.create_dm()
+        
+        self.connections[ctx.channel] = channel
+        await ctx.send(f"channel is `{self.connections[ctx.channel]}`")
+
     @open.error
     async def open_error(self, ctx, error):
         msg = ""
@@ -78,7 +85,7 @@ class messaging(commands.Cog):
             msg = "Enter a text channel id that the bot has access to"
  
         if msg and title:
-            embed = discord.Embed(title = title, color = color, description = msg)
+            embed = discord.Embed(title = title, color = ctx.me.color, description = msg)
             embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
             await ctx.send(embed = embed)
         else:

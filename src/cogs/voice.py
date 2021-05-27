@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from utilities.permissions import perm_check
 from discord.utils import get
-from settings import color
 
 class voice(commands.Cog):
     def __init__(self, client):
@@ -26,7 +25,7 @@ class voice(commands.Cog):
             msg = "Enter a voice channel id that the bot has access to"
  
         if msg and title:
-            embed = discord.Embed(title = title, color = color, description = msg)
+            embed = discord.Embed(title = title, color = ctx.me.color, description = msg)
             embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
             await ctx.send(embed = embed)
         else:

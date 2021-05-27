@@ -1,6 +1,4 @@
 import discord
-#from discord import guild
-#from discord.channel import DMChannel, TextChannel
 from discord.errors import HTTPException
 from discord.ext import commands
 from discord.mentions import AllowedMentions
@@ -10,10 +8,10 @@ import os
 import datetime
 
 from secrets import token, link
-from settings import color, playing, command_prefix, comment_prefix, error_responses, message_error
+from settings import playing, command_prefix, comment_prefix, error_responses, message_error
 
 from utilities.ErrorCheck import ErrorCheck
-from utilities.permissions import perm_check, trusted
+from utilities.permissions import perm_check
 
 intents = discord.Intents.default()
 intents.members = True
@@ -46,7 +44,7 @@ async def on_command_error(ctx, error):
 
 @client.command()
 async def invite(ctx):
-    embed = discord.Embed(title = f"{client.user.name}'s Invite", color = color, url = link)
+    embed = discord.Embed(title = f"{client.user.name}'s Invite", color = ctx.me.color, url = link)
     embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
     await ctx.send(embed = embed)
 
@@ -88,7 +86,7 @@ async def on_message(message):
         for pair in connections:
             if connections[pair] == message.channel:
                 msg = discord.Embed(description = message.content, color = message.author.color)
-                msg.set_footer(text = f"{message.author} | {message.author.id}\n{message.channel} | {message.id}", icon_url = message.author.avatar_url)
+                msg.set_footer(text = f"{message.author} • {message.author.id}\n{message.channel} • {message.id}", icon_url = message.author.avatar_url)
                 await pair.send(embed = msg)
 
                 if message.attachments:
@@ -113,7 +111,7 @@ async def on_message(message):
         except discord.errors.Forbidden:
             await command_errors.message_error_reply(message)
         
-    if message.channel.type == discord.ChannelType.private and message.channel not in (connections.keys() or connections.values()):
+    if message.channel.type == discord.ChannelType.private and message.channel not in connections.keys() and message.channel not in connections.values():
         print(f"{message.author.name}: {message.clean_content}")
         
 client.run(token)
