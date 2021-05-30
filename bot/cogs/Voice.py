@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from utilities.functions import perm_check
+from utilities.functions import perm_check, response
 from discord.utils import get
 
 class Voice(commands.Cog):
@@ -8,18 +8,16 @@ class Voice(commands.Cog):
         self.client = client
 
     @commands.command()
-    @perm_check()
     async def join(self, ctx, channel_id : int):
         channel = await self.client.fetch_channel(channel_id)
         voice = get(self.client.voice_clients, guild=channel.guild)
         await channel.connect()
-        await ctx.send(f"connected to `{channel.name}`")
-        
+        await response(messageable = ctx, text = f"connected to `{channel.name}` in `{channel.guild.name}`")
+
     @commands.command()
-    @perm_check()
     async def leave(self, ctx, guild : discord.Guild):
         await guild.voice_client.disconnect()
-        await ctx.send(f"disconnected in `{guild.name}`")
+        await response(messageable = ctx, text = f"disconnected in `{guild.name}`")
 
 
 def setup(client):

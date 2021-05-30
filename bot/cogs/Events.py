@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from settings import playing
 
 class Events(commands.Cog):
     def __init__(self, client):

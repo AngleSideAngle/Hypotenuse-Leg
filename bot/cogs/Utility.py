@@ -2,8 +2,7 @@ import discord
 from discord.ext import commands
 from utilities.functions import trusted
 from secrets import link
-
-import os
+from utilities.functions import response
 
 class Utility(commands.Cog):
     def __init__(self, client):
@@ -25,10 +24,12 @@ class Utility(commands.Cog):
             await self.client.change_presence(activity = game)
         else:
             await self.client.change_presence(activity = None)
-
+        await response(messageable = ctx, text = f"changed status to {game}")
+        
     @commands.command()
-    async def nick(ctx, guild : discord.Guild, *, bot_nick):
-        await guild.me.edit(nick = bot_nick)
+    async def nick(self, ctx, guild : discord.Guild, *, nick):
+        await guild.me.edit(nick = nick)
+        await response(messageable = ctx, text = f"set bot nickname in `{guild.name}` to `{nick}`")
 
 def setup(client):
     client.add_cog(Utility(client))

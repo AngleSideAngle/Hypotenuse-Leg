@@ -19,7 +19,19 @@ def perm_check():
         return ctx.author.id in trusted
     return commands.check(predicate)
     
-
+async def response(messageable : discord.abc.Messageable, text : str, title : str = None, color : discord.Colour = None):
+    msg = discord.Embed(description = text)
+    if title:
+        msg.title = title
+    if color:
+        msg.color = color
+    else:
+        if messageable.channel.type == discord.ChannelType.private:
+            msg.color = discord.Colour.dark_theme()
+        else:
+            msg.color = messageable.me.color
+    await messageable.reply(embed = msg, mention_author = False)
+    
 def incoming(message : discord.Message) -> discord.Embed:
     embed = discord.Embed(color = message.author.color)
     # sets author/top of embed to the sender's profile picture and nickname

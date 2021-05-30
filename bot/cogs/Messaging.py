@@ -3,7 +3,7 @@ import typing
 from discord.ext import commands
 from secrets import trusted
 from settings import comment_prefix
-from utilities.functions import list_id, incoming
+from utilities.functions import list_id, incoming, response
 
 class Messaging(commands.Cog):
     def __init__(self, client):
@@ -59,7 +59,7 @@ class Messaging(commands.Cog):
                 
                 embed = discord.Embed(title = user, color = user.color, description = f"{user.activities}\n{user.status}\n{user.roles}")
             except:
-                await ctx.send("that user is not present in the server you specified")
+                await response(messageable = ctx, title = "that user is not present in the server you specified")
                 return
         else:
             user = self.client.get_user(user_id)
@@ -75,9 +75,9 @@ class Messaging(commands.Cog):
     @commands.group(invoke_without_command = True)
     async def open(self, ctx):
         if not self.client.connections:
-            await ctx.send("there are no connections currently")
+            await response(messageable = ctx, text = "there are no connections currently")
             return
-        response = commands.Paginator(max_size = 2048)
+        msg = commands.Paginator(max_size = 2048)
         for connection in self.client.connections:
             if connection.type == discord.ChannelType.text:
                 line = f"{connection.guild.name}: {connection.name} • "
@@ -89,9 +89,9 @@ class Messaging(commands.Cog):
             else:
                 line += f"DM {self.client.connections[connection].recipient.name}"
 
-            response.add_line(line)
+            msg.add_line(line)
 
-        for page in response.pages:
+        for page in msg.pages:
             embed = discord.Embed(title = "Active Channel Connections", color = ctx.me.color, description = page)
             await ctx.send(embed = embed)
     
@@ -99,9 +99,9 @@ class Messaging(commands.Cog):
     async def close(self, ctx):
         if self.client.connections[ctx.channel]:
             del self.client.connections[ctx.channel]
-            await ctx.send("channel reset")
+            await response(messageable = ctx, text = "channel reset")
         else:
-            await ctx.send("there is no connection")
+            await response(messageable = ctx, text = "there is no connection")
 
     @open.command()
     async def channel(self, ctx, channel_id : int):
@@ -110,7 +110,7 @@ class Messaging(commands.Cog):
         if not channel.type == discord.ChannelType.text:
             raise commands.CommandInvokeError()
         self.client.connections[ctx.channel] = channel
-        await ctx.send(f"channel is `{self.client.connections[ctx.channel]}`")
+        await response(messageabale = ctx, text = f"channel is `{self.client.connections[ctx.channel]}`")
 
     @open.command()
     async def dm(self, ctx, user_id: int):
@@ -118,7 +118,7 @@ class Messaging(commands.Cog):
         channel = await user.create_dm()
         
         self.client.connections[ctx.channel] = channel
-        await ctx.send(f"channel is `{self.client.connections[ctx.channel]}`")
+        await response(messageabale = ctx, text = f"channel is `{self.client.connections[ctx.channel]}`")
 
     
     @commands.command()
