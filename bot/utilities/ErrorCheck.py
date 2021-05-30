@@ -7,6 +7,9 @@ class ErrorCheck:
         self.message_error = message_error
 
     async def check(self, messageable, error):
+        '''
+        Runs through a list of errors and responses, sends the response discord Embed for the matching error
+        '''
         title = None
         msg = None
         for i in self.responses:
@@ -19,4 +22,7 @@ class ErrorCheck:
             print(error)
 
     async def message_error_reply(self, message : discord.Message):
+        '''
+        Sends error response in the on_message function
+        '''
         await response(messageable = message, text = self.message_error[1], title = self.message_error[0], color = discord.Colour.red())
