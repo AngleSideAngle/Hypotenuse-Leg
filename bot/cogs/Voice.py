@@ -1,45 +1,29 @@
 import discord
 from discord.ext import commands
-from utilities.permissions import perm_check
+from utilities.functions import perm_check
 from discord.utils import get
 
-class voice(commands.Cog):
+class Voice(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @commands.command()
     @perm_check()
-    async def connect(self, ctx, channel_id):
+    async def join(self, ctx, channel_id : int):
         channel = await self.client.fetch_channel(channel_id)
         voice = get(self.client.voice_clients, guild=channel.guild)
         await channel.connect()
         await ctx.send(f"connected to `{channel.name}`")
-    
-    @connect.error
-    async def connect_error(self, ctx, error):
-        msg = ""
-        title = ""
-
-        if isinstance(error, commands.CommandInvokeError):
-            title = "Command Invoke Error"
-            msg = "Enter a voice channel id that the bot has access to"
- 
-        if msg and title:
-            embed = discord.Embed(title = title, color = ctx.me.color, description = msg)
-            embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-            await ctx.send(embed = embed)
-        else:
-            print(error)
-    
+        
     @commands.command()
     @perm_check()
-    async def disconnect(self, ctx, guild : discord.Guild):
+    async def leave(self, ctx, guild : discord.Guild):
         await guild.voice_client.disconnect()
         await ctx.send(f"disconnected in `{guild.name}`")
 
 
 def setup(client):
-    client.add_cog(voice(client))
+    client.add_cog(Voice(client))
 
 # bad
 '''

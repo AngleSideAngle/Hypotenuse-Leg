@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands.errors import BotMissingAnyRole, BotMissingPermissions, CheckFailure
 playing = "The Legend of Zelda: Breath of the Wild"
 command_prefix = '+'
 comment_prefix = '#'
@@ -21,6 +20,10 @@ error_responses = {
     commands.errors.CheckFailure : (
         "Check Failure",
         "You do not have the required permissions to run this command"
+    ),
+    commands.errors.CommandInvokeError : (
+        "Invoke Error",
+        "The command encountered an error, check to see if the arguments you gave are correct"
     )
 }
 
