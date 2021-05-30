@@ -188,5 +188,20 @@ class Messaging(commands.Cog):
                     embed.add_field(name = "After", value = after.content[0:1024])
                     await pair.send(embed = embed)
 
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        connections = self.client.connections
+        
+        if message.channel in connections.values():
+            for pair in connections:
+                if connections[pair] == message.channel:
+                    embed = incoming(message)
+                    embed.title = "Delete"
+                    if "~~" not in message.content:
+                        embed.description = f"~~{message.content}~~"
+                    else:
+                        embed.description = message.content
+                    await pair.send(embed = embed)
+
 def setup(client):
     client.add_cog(Messaging(client))
