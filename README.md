@@ -1,4 +1,4 @@
-# messaging-discord-bot
+# messaging-bot
 This is a discord bot that allows you to navigate discord and interact with servers like a user would.
 Something to note is that this bot might be against discord's TOS. It is only meant for having fun between friends, do not use it for anything malicious.
 
