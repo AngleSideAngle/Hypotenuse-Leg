@@ -14,7 +14,6 @@ class Utility(commands.Cog):
     @commands.command()
     async def invite(self, ctx):
         embed = discord.Embed(title = f"{self.client.user.name}'s Invite", color = ctx.me.color, url = link)
-        embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
         await ctx.send(embed = embed)
 
     @commands.command()

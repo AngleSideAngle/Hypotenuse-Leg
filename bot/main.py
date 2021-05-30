@@ -26,7 +26,6 @@ def load_cogs():
 async def on_command_error(ctx, error):
     await client.errors.check(messageable = ctx, error = error)
 
-
 @client.command()
 @perm_check()
 async def reload(ctx):

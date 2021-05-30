@@ -26,10 +26,10 @@ async def response(messageable : discord.abc.Messageable, text : str, title : st
     if color:
         msg.color = color
     else:
-        if messageable.channel.type == discord.ChannelType.private:
-            msg.color = discord.Colour.dark_theme()
-        else:
+        if isinstance(commands.Context, messageable):
             msg.color = messageable.me.color
+        else:
+            msg.color = messageable.guild.me.color
     await messageable.reply(embed = msg, mention_author = False)
     
 def incoming(message : discord.Message) -> discord.Embed:
