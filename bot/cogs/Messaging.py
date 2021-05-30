@@ -118,7 +118,7 @@ class Messaging(commands.Cog):
         channel = await user.create_dm()
         
         self.client.connections[ctx.channel] = channel
-        await response(messageabale = ctx, text = f"channel is `{self.client.connections[ctx.channel]}`")
+        await response(messageable = ctx, text = f"channel is `{self.client.connections[ctx.channel]}`")
 
     
     @commands.command()
@@ -171,7 +171,6 @@ class Messaging(commands.Cog):
                         await connections[message.channel].send(file = file)
             except discord.errors.Forbidden:
                 await self.client.errors.message_error_reply(message)
-            await self.client.errors.message_error_reply(message)
             
         if message.channel.type == discord.ChannelType.private and message.channel not in connections.keys() and message.channel not in connections.values():
             print(f"{message.author.name}: {message.clean_content}")

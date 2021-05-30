@@ -26,7 +26,7 @@ async def response(messageable : discord.abc.Messageable, text : str, title : st
     if color:
         msg.color = color
     else:
-        if isinstance(commands.Context, messageable):
+        if isinstance(messageable, commands.Context):
             msg.color = messageable.me.color
         else:
             msg.color = messageable.guild.me.color
