@@ -23,7 +23,7 @@ error_responses = {
     ),
     commands.errors.CommandInvokeError : (
         "Invoke Error",
-        "The command encountered an error, check to see if the arguments you gave are correct"
+        "The command encountered an error, check to see if the arguments you gave are correct and the bot has access to them"
     )
 }
 

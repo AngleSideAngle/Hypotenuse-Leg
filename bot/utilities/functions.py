@@ -70,3 +70,21 @@ def incoming(message : discord.Message) -> discord.Embed:
 
     embed.set_footer(text = f"{message.author} • {message.author.id}\n{message.channel} • {message.id}")
     return embed
+
+def inc_message(message : discord.Message) -> list:
+    result = []
+    if message.content:
+        msg = incoming(message = message)
+        msg.description = message.clean_content
+        result.append(msg)
+
+    for attachment in message.attachments:
+        if attachment.content_type == "image/png":
+            img = incoming(message = message)
+            img.set_image(url = attachment.url)
+            result.append(img)
+    
+    for embed in message.embeds:
+        result.append(embed)
+
+    return result

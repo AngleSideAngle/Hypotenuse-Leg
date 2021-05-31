@@ -19,7 +19,6 @@ class Voice(commands.Cog):
         await guild.voice_client.disconnect()
         await response(messageable = ctx, text = f"disconnected in `{guild.name}`")
 
-
 def setup(client):
     client.add_cog(Voice(client))
 
