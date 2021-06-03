@@ -8,13 +8,16 @@ from settings import command_prefix, error_responses, message_error
 
 from utilities.functions import perm_check, response
 from utilities.ErrorCheck import ErrorCheck
+from utilities.EmbedHelp import EmbedHelp
+
 
 intents = discord.Intents.all()
 mentions = discord.AllowedMentions(everyone = False, roles = False)
-client = commands.Bot(command_prefix = command_prefix, intents = intents, allowed_mentions = mentions)
+client = commands.Bot(command_prefix = command_prefix, intents = intents, allowed_mentions = mentions, help_command = EmbedHelp())
 
 client.errors = ErrorCheck(error_responses, message_error= message_error)
 client.connections = {} # talking channel : receiving channel
+
 
 #activates all cogs on startup
 def load_cogs():
