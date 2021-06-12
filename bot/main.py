@@ -18,7 +18,6 @@ client = commands.Bot(command_prefix = command_prefix, intents = intents, allowe
 client.errors = ErrorCheck(error_responses, message_error= message_error)
 client.connections = {} # talking channel : receiving channel
 
-
 #activates all cogs on startup
 def load_cogs():
     for file in os.listdir("./cogs"):

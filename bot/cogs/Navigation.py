@@ -1,4 +1,5 @@
 import discord
+from discord import activity
 from discord.ext import commands
 from utilities.functions import list_id, response
 from secrets import trusted
@@ -54,11 +55,31 @@ class Navigation(commands.Cog):
         if guild:
             try:
                 user = guild.get_member(user_id)
-                
-                embed = discord.Embed(title = user, color = user.color, description = f"{user.activities}\n{user.status}\n{user.roles}")
             except:
                 await response(messageable = ctx, title = "that user is not present in the server you specified")
                 return
+            embed = discord.Embed(title = user, color = user.color)
+            
+            for activity in user.activities:
+                if activity.type == discord.ActivityType.custom:
+                    embed.description = activity.name
+                else:
+                    value = " "
+                    
+                    if activity.type == discord.ActivityType.playing:
+                        value = f"{activity.details}"
+                    elif activity.type == discord.ActivityType.listening:
+                        value = f"{activity.title}\nBy {activity.artist}"
+                    elif activity.type == discord.ActivityType.streaming:
+                        value = activity.game
+                    
+                    embed.add_field(name = activity.name, value = f"```{value}```", inline = False)
+
+            for page in list_id(size = 1024, data = user.roles):
+                embed.add_field(name = "Roles", value = page)
+            
+                
+            
         else:
             user = self.client.get_user(user_id)
             mutuals = list_id(size = 1024, data = user.mutual_guilds)
