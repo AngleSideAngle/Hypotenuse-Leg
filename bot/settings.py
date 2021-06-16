@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands.errors import BadArgument
 playing = "The Legend of Zelda: Breath of the Wild"
 command_prefix = '+'
 comment_prefix = '#'
@@ -24,6 +25,10 @@ error_responses = {
     commands.errors.CommandInvokeError : (
         "Invoke Error",
         "The command encountered an error, check to see if the arguments you gave are correct and the bot has access to them"
+    ),
+    commands.errors.BadArgument : (
+        "Bad Argument",
+        "You did not input the command's arguments correctly, refer to `help` for information on how to use the command"
     )
 }
 
