@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from utilities.functions import perm_check, response
+from utilities.functions import response
 from discord.utils import get
 
 class Voice(commands.Cog):

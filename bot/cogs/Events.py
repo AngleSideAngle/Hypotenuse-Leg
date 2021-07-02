@@ -8,8 +8,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"logged in as: {self.client.user}")
-    
-    
+        
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         print(f"Joined {guild.name}")

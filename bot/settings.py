@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands.errors import BadArgument
 playing = "The Legend of Zelda: Breath of the Wild"
 command_prefix = '+'
 comment_prefix = '#'

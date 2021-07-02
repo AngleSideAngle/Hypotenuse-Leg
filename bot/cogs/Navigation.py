@@ -1,5 +1,4 @@
 import discord
-from discord import activity
 from discord.ext import commands
 from utilities.functions import list_id, response
 from secrets import trusted
