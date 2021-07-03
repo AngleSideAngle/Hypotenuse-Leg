@@ -79,7 +79,7 @@ def inc_message(message : discord.Message) -> list:
         result.append(msg)
 
     for attachment in message.attachments:
-        if attachment.content_type == "image/png":
+        if "image" in attachment.content_type:
             img = incoming(message = message)
             img.set_image(url = attachment.url)
             result.append(img)
