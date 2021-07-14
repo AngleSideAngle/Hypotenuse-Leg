@@ -3,18 +3,15 @@ import typing
 from discord.ext import commands
 from secrets import trusted
 from settings import comment_prefix
-from utilities.functions import inc_message, incoming, response
+from utilities.functions import inc_message, incoming, response, perm_check
 
 class Messaging(commands.Cog):
     def __init__(self, client):
         self.client = client
     
-    #makes all commands in this cog require trusted permissions
-    async def cog_check(self, ctx):
-        return ctx.author.id in trusted
-    
     # open command group ----------------
     @commands.group(invoke_without_command = True)
+    @perm_check()
     async def open(self, ctx):
         if not self.client.connections:
             await response(messageable = ctx, text = "there are no connections currently")
@@ -37,7 +34,9 @@ class Messaging(commands.Cog):
             embed = discord.Embed(title = "Active Channel Connections", color = ctx.me.color, description = page)
             await ctx.send(embed = embed)
     
+    
     @open.command()
+    @perm_check()
     async def close(self, ctx):
         if self.client.connections[ctx.channel]:
             del self.client.connections[ctx.channel]
@@ -46,6 +45,7 @@ class Messaging(commands.Cog):
             await response(messageable = ctx, text = "there is no connection")
 
     @open.command()
+    @perm_check()
     async def channel(self, ctx, channel_id : int):
         channel = await self.client.fetch_channel(channel_id)
         
@@ -55,6 +55,7 @@ class Messaging(commands.Cog):
         await response(messageable = ctx, text = f"channel is `{self.client.connections[ctx.channel]}`")
 
     @open.command()
+    @perm_check()
     async def dm(self, ctx, user_id: int):
         user = self.client.get_user(user_id)
         channel = await user.create_dm()
