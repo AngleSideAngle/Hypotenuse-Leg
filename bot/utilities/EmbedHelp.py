@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from settings import repo
 
 class EmbedHelp(commands.MinimalHelpCommand):
     
@@ -29,7 +30,7 @@ class EmbedHelp(commands.MinimalHelpCommand):
                 )
 
         developer = await self.context.bot.fetch_user(547910268081143830)
-        help.set_footer(text="https://github.com/AngleSideAngle/Half-Life", icon_url=developer.avatar_url)
+        help.set_footer(text = repo, icon_url = developer.avatar_url)
             
         await self.get_destination().send(embed = help)
 
