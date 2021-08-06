@@ -27,7 +27,9 @@ class EmbedHelp(commands.MinimalHelpCommand):
                     name = name,
                     value = page
                 )
-        help.set_footer(text = "https://github.com/AngleSideAngle/messaging-bot", icon_url = "https://cdn.discordapp.com/avatars/547910268081143830/1a51e6ed23d81333c9deffecf40bf9ec.png?size=256")
+
+        developer = await self.context.bot.fetch_user(547910268081143830)
+        help.set_footer(text="https://github.com/AngleSideAngle/Half-Life", icon_url=developer.avatar_url)
             
         await self.get_destination().send(embed = help)
 
