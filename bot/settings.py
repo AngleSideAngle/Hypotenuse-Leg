@@ -12,7 +12,7 @@ error_responses = {
     ),
     commands.errors.BotMissingPermissions : (
         "Missing Permissions",
-        f"The bot lacks required permissions"
+        "The bot lacks required permissions"
     ),
     commands.errors.MissingRequiredArgument : (
         "Missing Required Arguments",
