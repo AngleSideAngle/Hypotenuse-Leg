@@ -68,7 +68,7 @@ class Messaging(commands.Cog):
     async def reply(self, ctx, message_id : int, ping : typing.Optional[bool] = True, *, reply : str):
 
         channel = self.client.connections[ctx.channel]
-        message = await channel.fetch_message(message_id)
+        message = channel.get_partial_message(message_id)
         await message.reply(reply, allowed_mentions = discord.AllowedMentions(replied_user = ping))
 
     @commands.Cog.listener()

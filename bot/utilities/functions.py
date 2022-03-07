@@ -56,18 +56,9 @@ def incoming(message : discord.Message) -> discord.Embed:
     Returns a discord Embed giving information about a message.
     Used to show messages from one channel in another
     '''
+    
     embed = discord.Embed(color = message.author.color)
-    # sets author/top of embed to the sender's profile picture and nickname
-    try:
-        nick = message.author.nick
-    except:
-        nick = None
-
-    if nick:
-        embed.set_author(name = nick, icon_url = message.author.avatar_url)
-    else:
-        embed.set_author(name = message.author.name, icon_url = message.author.avatar_url)
-
+    embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
     embed.set_footer(text = f"{message.author} • {message.author.id}\n{message.channel} • {message.id}")
     return embed
 

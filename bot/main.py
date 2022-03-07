@@ -1,15 +1,13 @@
+import os
+from secrets import token, test_guild
+
 import discord
 from discord.ext import commands
 
-import os
-
-from secrets import token
 from settings import command_prefix, error_responses, message_error
-
-from utilities.functions import perm_check, response
-from utilities.ErrorCheck import ErrorCheck
 from utilities.EmbedHelp import EmbedHelp
-
+from utilities.ErrorCheck import ErrorCheck
+from utilities.functions import perm_check, response
 
 intents = discord.Intents.all()
 mentions = discord.AllowedMentions(everyone = False, roles = False)
@@ -22,7 +20,10 @@ client.connections = {} # talking channel : receiving channel
 def load_cogs():
     for file in os.listdir("./cogs"):
         if file.endswith(".py"):
-            client.load_extension(f"cogs.{file[:-3]}")
+            try:
+                client.load_extension(f"cogs.{file[:-3]}")
+            except:
+                continue
 
 @client.event
 async def on_command_error(ctx, error):
