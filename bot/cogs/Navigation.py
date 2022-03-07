@@ -86,7 +86,7 @@ class Navigation(commands.Cog):
             for page in mutuals:
                 embed.add_field(name = "mutual servers", value = page)
 
-        embed.set_thumbnail(url = user.avatar_url)
+        embed.set_thumbnail(url = user.avatar.url)
         await ctx.send(embed = embed)
 
 def setup(client):

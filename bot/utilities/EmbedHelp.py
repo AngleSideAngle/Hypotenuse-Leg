@@ -30,7 +30,7 @@ class EmbedHelp(commands.MinimalHelpCommand):
                 )
 
         developer = await self.context.bot.fetch_user(547910268081143830)
-        help.set_footer(text = repo, icon_url = developer.avatar_url)
+        help.set_footer(text = repo, icon_url = developer.avatar.url)
             
         await self.get_destination().send(embed = help)
 

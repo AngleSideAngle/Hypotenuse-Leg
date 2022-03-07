@@ -40,6 +40,7 @@ async def response(messageable : discord.abc.Messageable, text : str, title : st
     Generates and sends a simple discord Embed as a reply to the messageable
     '''
     msg = discord.Embed(description = text)
+    # msg = discord.Embed(description=text, title=title if title else discord.Embed.Empty, color=color if color else messageable.me.color if isinstance(messageable, commands.Context) else messageable.guild.me.color)
     if title:
         msg.title = title
     if color:
@@ -58,7 +59,7 @@ def incoming(message : discord.Message) -> discord.Embed:
     '''
     
     embed = discord.Embed(color = message.author.color)
-    embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
+    embed.set_author(name=message.author.display_name, icon_url=message.author.avatar.url)
     embed.set_footer(text = f"{message.author} • {message.author.id}\n{message.channel} • {message.id}")
     return embed
 
