@@ -59,7 +59,7 @@ def incoming(message : discord.Message) -> discord.Embed:
     '''
     
     embed = discord.Embed(color = message.author.color)
-    embed.set_author(name=message.author.display_name, icon_url=message.author.avatar.url)
+    embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
     embed.set_footer(text = f"{message.author} • {message.author.id}\n{message.channel} • {message.id}")
     return embed
 
