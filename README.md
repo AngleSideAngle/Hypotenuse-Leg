@@ -1,4 +1,4 @@
-# Half-Life
+# Hypotenuse-Leg
 The code for the HypotenuseLeg discord bot, it allows you to navigate channels and connect to them. Everything you send in the sending channel will then be sent through the bot into the receiving channel, and the other way around.
 It is only meant for having fun between friends, do not use it for anything malicious.
 
