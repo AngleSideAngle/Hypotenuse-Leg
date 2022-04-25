@@ -1,5 +1,5 @@
 import os
-from secrets import token, test_guild
+from secrets import token
 
 import discord
 from discord.ext import commands
