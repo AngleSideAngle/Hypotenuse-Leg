@@ -36,7 +36,7 @@ def perm_check():
         return ctx.author.id in trusted
     return commands.check(predicate)
     
-async def simple_embed(messageable : discord.abc.Messageable, text : str, title : str = None, color : discord.Colour = None):
+async def response(messageable : discord.abc.Messageable, text : str, title : str = None, color : discord.Colour = None):
     '''
     Generates and sends a simple discord Embed as a reply to the messageable
     '''
