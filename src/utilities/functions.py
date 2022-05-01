@@ -1,3 +1,4 @@
+from ast import Lambda
 import discord
 from discord.ext import commands
 from secrets import trusted
@@ -80,3 +81,6 @@ def inc_message(message : discord.Message) -> list:
         result.append(embed)
 
     return result
+
+def send_to_connections(connections : dict, message : discord.Message, logic : Lambda):
+    pass

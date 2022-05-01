@@ -18,7 +18,7 @@ client.connections = {} # talking channel : receiving channel
 
 #activates all cogs on startup
 def load_cogs():
-    for file in os.listdir("./cogs"):
+    for file in os.listdir(os.path.dirname(__file__) + "/cogs"):
         if file.endswith(".py"):
             try:
                 client.load_extension(f"cogs.{file[:-3]}")
