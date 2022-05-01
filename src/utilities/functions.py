@@ -36,12 +36,11 @@ def perm_check():
         return ctx.author.id in trusted
     return commands.check(predicate)
     
-async def response(messageable : discord.abc.Messageable, text : str, title : str = None, color : discord.Colour = None):
+async def simple_embed(messageable : discord.abc.Messageable, text : str, title : str = None, color : discord.Colour = None):
     '''
     Generates and sends a simple discord Embed as a reply to the messageable
     '''
     msg = discord.Embed(description = text)
-    # msg = discord.Embed(description=text, title=title if title else discord.Embed.Empty, color=color if color else messageable.me.color if isinstance(messageable, commands.Context) else messageable.guild.me.color)
     if title:
         msg.title = title
     if color:
@@ -81,6 +80,3 @@ def inc_message(message : discord.Message) -> list:
         result.append(embed)
 
     return result
-
-def send_to_connections(connections : dict, message : discord.Message, logic : Lambda):
-    pass

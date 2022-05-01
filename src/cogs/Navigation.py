@@ -77,8 +77,6 @@ class Navigation(commands.Cog):
             for page in list_id(size = 1024, data = user.roles):
                 embed.add_field(name = "Roles", value = page)
             
-                
-            
         else:
             user = self.client.get_user(user_id)
             mutuals = list_id(size = 1024, data = user.mutual_guilds)

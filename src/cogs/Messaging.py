@@ -102,7 +102,8 @@ class Messaging(commands.Cog):
                         await connections[message.channel].send(file = file)
             except discord.errors.Forbidden:
                 await self.client.errors.message_error_reply(message)
-            
+        
+        # prints dms to console
         if message.channel.type == discord.ChannelType.private and message.channel not in connections.keys() and message.channel not in connections.values():
             print(f"{message.author.name}: {message.clean_content}")
     
