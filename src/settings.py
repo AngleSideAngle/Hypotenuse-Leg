@@ -1,6 +1,10 @@
-import discord
-from discord.ext import commands
-playing = "The Legend of Zelda: Breath of the Wild" # this currently doesn't do anything
-repo = "https://github.com/AngleSideAngle/Hypotenuse-Leg" # please do not change this
+# playing currently doesn't do anything
+playing = "The Legend of Zelda: Breath of the Wild"
+repo = "https://github.com/AngleSideAngle/Hypotenuse-Leg"  # please do not change this
 command_prefix = '+'
 comment_prefix = '#'
+
+message_error = (
+    "Missing Permissions",
+    "The bot lacks required permissions"
+)
