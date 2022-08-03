@@ -4,16 +4,14 @@ from secrets import token
 import discord
 from discord.ext import commands
 
-from settings import command_prefix, error_responses, message_error
+from settings import command_prefix
 from utilities.EmbedHelp import EmbedHelp
-from utilities.ErrorCheck import ErrorCheck
 from utilities.functions import perm_check, response
 
 intents = discord.Intents.all()
 mentions = discord.AllowedMentions(everyone = False, roles = False)
 client = commands.Bot(command_prefix = command_prefix, intents = intents, allowed_mentions = mentions, help_command = EmbedHelp())
 
-client.errors = ErrorCheck(error_responses, message_error= message_error)
 client.connections = {} # talking channel : receiving channel
 
 #activates all cogs on startup
@@ -27,7 +25,7 @@ def load_cogs():
 
 @client.event
 async def on_command_error(ctx, error):
-    await client.errors.check(messageable = ctx, error = error)
+    await response(ctx, text = error, title = "Error", color = discord.Colour.red())
 
 @client.command()
 @perm_check()
