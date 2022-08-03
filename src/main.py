@@ -1,9 +1,9 @@
 import os
-from secrets import token
 
 import discord
 from discord.ext import commands
 
+from secrets import token
 from settings import command_prefix
 from util import EmbedHelp, perm_check, response
 
@@ -32,7 +32,7 @@ def load_cogs():
 @client.command()
 @perm_check()
 async def reload(ctx):
-    for file in os.listdir("./cogs"):
+    for file in os.listdir(os.path.dirname(__file__) + "/cogs"):
         if file.endswith(".py"):
             client.reload_extension(f"cogs.{file[:-3]}")
     await response(messageable=ctx, text="reloaded cogs")

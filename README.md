@@ -27,10 +27,7 @@ However, you probably are not, in which case, there are no guarantees.
 ```sh
 git clone https://github.com/AngleSideAngle/Hypotenuse-Leg.git
 cd Hypotenuse-Leg
-source bin/activate
-pip install -r requirements.txt
-deactivate
-cp secrets_template.py ./src/secrets.py
+./install.sh
 nano ./src/secrets.py
 ```
 You'll be launched into a text editor where you can edit secrets.py with the proper values for your bot.
