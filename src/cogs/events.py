@@ -1,7 +1,6 @@
-from util import response
-
 import discord
 from discord.ext import commands
+from util import response
 
 
 class Events(commands.Cog):

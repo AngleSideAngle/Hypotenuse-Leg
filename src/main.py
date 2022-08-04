@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 
 import discord
 from discord.ext import commands
 
-from secrets import token
+from secret import token
 from settings import command_prefix
 from util import EmbedHelp, perm_check, response
 

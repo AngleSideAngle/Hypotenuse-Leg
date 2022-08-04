@@ -1,4 +1,4 @@
-from secrets import trusted
+from secret import trusted
 
 import discord
 from discord.ext import commands

@@ -1,4 +1,4 @@
-from secrets import link, trusted
+from secret import link, trusted
 
 import discord
 from discord.ext import commands

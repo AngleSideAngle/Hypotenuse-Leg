@@ -1,8 +1,8 @@
 import typing
-from secrets import trusted
 
 import discord
 from discord.ext import commands
+from secret import trusted
 from util import list_id
 
 
