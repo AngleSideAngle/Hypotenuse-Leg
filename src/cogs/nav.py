@@ -7,21 +7,20 @@ from util import list_id
 
 
 class Navigation(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     def cog_check(self, ctx):
         return ctx.author.id in trusted
 
     @commands.group(invoke_without_command=True)
-    async def info(self, ctx):
-
-        response = list_id(size=2048, data=await self.client.fetch_guilds().flatten())
+    async def info(self, ctx: commands.Context):
+        response = list_id(size=2048, data=[user async for user in self.bot.fetch_guilds()])
         for page in response:
             embed = discord.Embed(
-                title=f"{self.client.user.name}'s servers",
+                title=f"{self.bot.user.name}'s servers",
                 color=ctx.me.color,
-                description=f"`{self.client.command_prefix}info channels <guild id>` for the channels of a guild\n`{self.client.command_prefix}info members <guild id>` for the list of members in a guild\n`{self.client.command_prefix}info member <member id>` for information about a member.{page}")
+                description=f"`{self.bot.command_prefix}info channels <guild id>` for the channels of a guild\n`{self.bot.command_prefix}info members <guild id>` for the list of members in a guild\n`{self.bot.command_prefix}info member <member id>` for information about a member.{page}")
 
         await ctx.send(embed=embed)
 
@@ -53,7 +52,7 @@ class Navigation(commands.Cog):
     @info.command()
     async def members(self, ctx, guild: discord.Guild):
 
-        response = list_id(size=2048, data=await guild.fetch_members().flatten())
+        response = list_id(size=2048, data=[user async for user in guild.fetch_members()])
 
         for page in response:
             embed = discord.Embed(
@@ -91,7 +90,7 @@ class Navigation(commands.Cog):
                 embed.add_field(name="Roles", value=page)
 
         else:
-            user = self.client.get_user(user_id)
+            user = self.bot.get_user(user_id)
             mutuals = list_id(size=1024, data=user.mutual_guilds)
             embed = discord.Embed(
                 title=user,
@@ -100,9 +99,9 @@ class Navigation(commands.Cog):
             for page in mutuals:
                 embed.add_field(name="mutual servers", value=page)
 
-        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_thumbnail(url=user.avatar)
         await ctx.send(embed=embed)
 
 
-def setup(client):
-    client.add_cog(Navigation(client))
+async def setup(bot):
+    await bot.add_cog(Navigation(bot))

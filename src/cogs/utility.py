@@ -6,8 +6,8 @@ from util import response
 
 
 class Utility(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     def cog_check(self, ctx):
         return ctx.author.id in trusted
@@ -15,7 +15,7 @@ class Utility(commands.Cog):
     @commands.command()
     async def invite(self, ctx):
         embed = discord.Embed(
-            title=f"{self.client.user.name}'s Invite",
+            title=f"{self.bot.user.name}'s Invite",
             color=ctx.me.color,
             url=link)
         await ctx.send(embed=embed)
@@ -24,9 +24,9 @@ class Utility(commands.Cog):
     async def status(self, ctx, *, status=None):
         if status:
             game = discord.Game(status)
-            await self.client.change_presence(activity=game)
+            await self.bot.change_presence(activity=game)
         else:
-            await self.client.change_presence(activity=None)
+            await self.bot.change_presence(activity=None)
         await response(messageable=ctx, text=f"changed status to {game}")
 
     @commands.command()
@@ -35,5 +35,5 @@ class Utility(commands.Cog):
         await response(messageable=ctx, text=f"set bot nickname in `{guild.name}` to `{nick}`")
 
 
-def setup(client):
-    client.add_cog(Utility(client))
+async def setup(bot):
+    await bot.add_cog(Utility(bot))

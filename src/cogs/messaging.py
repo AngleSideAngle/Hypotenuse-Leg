@@ -7,27 +7,27 @@ from util import inc_message, message_embed, perm_check, response
 
 
 class Messaging(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     # open command group ----------------
     @commands.group(invoke_without_command=True)
     @perm_check()
     async def open(self, ctx):
-        if not self.client.connections:
+        if not self.bot.connections:
             await response(messageable=ctx, text="there are no connections currently")
             return
         msg = commands.Paginator(max_size=2048)
-        for connection in self.client.connections:
+        for connection in self.bot.connections:
             if connection.type == discord.ChannelType.text:
                 line = f"{connection.guild.name}: {connection.name} • "
             else:
                 line = f"DM {connection.recipient.name} • "
 
-            if self.client.connections[connection].type == discord.ChannelType.text:
-                line += f"{self.client.connections[connection].guild.name}: {self.client.connections[connection].name}"
+            if self.bot.connections[connection].type == discord.ChannelType.text:
+                line += f"{self.bot.connections[connection].guild.name}: {self.bot.connections[connection].name}"
             else:
-                line += f"DM {self.client.connections[connection].recipient.name}"
+                line += f"DM {self.bot.connections[connection].recipient.name}"
 
             msg.add_line(line)
 
@@ -41,8 +41,8 @@ class Messaging(commands.Cog):
     @open.command()
     @perm_check()
     async def close(self, ctx):
-        if self.client.connections[ctx.channel]:
-            del self.client.connections[ctx.channel]
+        if self.bot.connections[ctx.channel]:
+            del self.bot.connections[ctx.channel]
             await response(messageable=ctx, text="channel reset")
         else:
             await response(messageable=ctx, text="there is no connection")
@@ -50,26 +50,26 @@ class Messaging(commands.Cog):
     @open.command()
     @perm_check()
     async def channel(self, ctx, channel_id: int):
-        channel = await self.client.fetch_channel(channel_id)
+        channel = await self.bot.fetch_channel(channel_id)
 
         if not channel.type == discord.ChannelType.text:
             raise commands.CommandInvokeError("The channel_id given must represent a text channel")
-        self.client.connections[ctx.channel] = channel
-        await response(messageable=ctx, text=f"channel is `{self.client.connections[ctx.channel]}`")
+        self.bot.connections[ctx.channel] = channel
+        await response(messageable=ctx, text=f"channel is `{self.bot.connections[ctx.channel]}`")
 
     @open.command()
     @perm_check()
     async def dm(self, ctx, user_id: int):
-        user = self.client.get_user(user_id)
+        user = self.bot.get_user(user_id)
         channel = await user.create_dm()
 
-        self.client.connections[ctx.channel] = channel
-        await response(messageable=ctx, text=f"channel is `{self.client.connections[ctx.channel]}`")
+        self.bot.connections[ctx.channel] = channel
+        await response(messageable=ctx, text=f"channel is `{self.bot.connections[ctx.channel]}`")
 
     @commands.command()
     async def reply(self, ctx, message_id: int, ping: typing.Optional[bool] = True, *, reply: str):
 
-        channel = self.client.connections[ctx.channel]
+        channel = self.bot.connections[ctx.channel]
         message = channel.get_partial_message(message_id)
         sent_message = await message.reply(reply, allowed_mentions=discord.AllowedMentions(replied_user=ping))
         for embed in inc_message(message=sent_message):
@@ -78,10 +78,10 @@ class Messaging(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
 
-        if message.author == self.client.user:
+        if message.author == self.bot.user:
             return
 
-        connections = self.client.connections
+        connections = self.bot.connections
 
         # sends incoming messages
         if message.channel in connections.values():
@@ -91,7 +91,7 @@ class Messaging(commands.Cog):
                         await pair.send(embed=embed)
 
         # EVERYTHING PAST HERE IGNORES PREFIXES
-        if message.content.startswith(self.client.command_prefix) or message.content.startswith(comment_prefix):
+        if message.content.startswith(self.bot.command_prefix) or message.content.startswith(comment_prefix):
             return
 
         # sends outgoing messages
@@ -118,7 +118,7 @@ class Messaging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-        connections = self.client.connections
+        connections = self.bot.connections
 
         if before.content != after.content and after.channel in connections.values():
             for pair in connections:
@@ -131,7 +131,7 @@ class Messaging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        connections = self.client.connections
+        connections = self.bot.connections
 
         if message.channel in connections.values():
             for pair in connections:
@@ -143,5 +143,5 @@ class Messaging(commands.Cog):
                         await pair.send(embed=embed)
 
 
-def setup(client):
-    client.add_cog(Messaging(client))
+async def setup(bot):
+    await bot.add_cog(Messaging(bot))

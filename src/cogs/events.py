@@ -4,12 +4,12 @@ from util import response
 
 
 class Events(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f"logged in as: {self.client.user}")
+        print(f"logged in as: {self.bot.user}")
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -20,7 +20,5 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         await response(ctx, text=error, title="Error", color=discord.Colour.red())
 
-
-
-def setup(client):
-    client.add_cog(Events(client))
+async def setup(bot):
+    await bot.add_cog(Events(bot))

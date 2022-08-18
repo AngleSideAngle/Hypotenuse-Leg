@@ -30,7 +30,7 @@ class EmbedHelp(commands.MinimalHelpCommand):
                 )
 
         developer = await self.context.bot.fetch_user(547910268081143830)
-        help.set_footer(text=repo, icon_url=developer.avatar_url)
+        help.set_footer(text=repo, icon_url=developer.avatar)
 
         await self.get_destination().send(embed=help)
 
@@ -106,7 +106,7 @@ def message_embed(message: discord.Message) -> discord.Embed:
 
     embed = discord.Embed(color=message.author.color)
     embed.set_author(name=message.author.display_name,
-                     icon_url=message.author.avatar_url)
+                     icon_url=message.author.avatar)
     embed.set_footer(
         text=f"{message.author} • {message.author.id}\n{message.channel} • {message.id}")
     return embed

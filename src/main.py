@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import asyncio
+from json import load
 import os
 
 import discord
@@ -11,34 +13,39 @@ from util import EmbedHelp, perm_check, response
 
 intents = discord.Intents.all()
 mentions = discord.AllowedMentions(everyone=False, roles=False)
-client = commands.Bot(
+bot = commands.Bot(
     command_prefix=command_prefix,
     intents=intents,
     allowed_mentions=mentions,
     help_command=EmbedHelp())
 
 # talking channel : receiving channel
-client.connections = {}
+bot.connections = {}
 
 
 # activates all cogs on startup
-def load_cogs():
+async def load_cogs():
     '''
     loads cogs into the bot
     '''
     for file in os.listdir(os.path.dirname(__file__) + "/cogs"):
         if file.endswith(".py"):
-            client.load_extension(f"cogs.{file[:-3]}")
+            await bot.load_extension(f"cogs.{file[:-3]}")
 
 
-@client.command()
+@bot.command()
 @perm_check()
 async def reload(ctx):
     for file in os.listdir(os.path.dirname(__file__) + "/cogs"):
         if file.endswith(".py"):
-            client.reload_extension(f"cogs.{file[:-3]}")
+            await bot.reload_extension(f"cogs.{file[:-3]}")
     await response(messageable=ctx, text="reloaded cogs")
 
+
+async def main():
+    async with bot:
+        await load_cogs()
+        await bot.start(token)
+
 if __name__ == "__main__":
-    load_cogs()
-    client.run(token)
+    asyncio.run(main())
